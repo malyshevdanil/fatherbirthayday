@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>С днём рождения, папа!</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #fff8f0 0%, #ffecd2 50%, #fff0e6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Floating confetti dots in background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, #ffb347 2px, transparent 2px),
+        radial-gradient(circle, #ff8c69 2px, transparent 2px),
+        radial-gradient(circle, #ffd700 2px, transparent 2px),
+        radial-gradient(circle, #ffcba4 2px, transparent 2px);
+      background-size: 120px 120px, 90px 90px, 150px 150px, 80px 80px;
+      background-position: 10px 10px, 50px 40px, 30px 80px, 70px 20px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      display: none;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      padding: 24px 16px;
+      animation: fadeIn 0.45s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 44px 40px 48px;
+      box-shadow:
+        0 8px 32px rgba(255, 140, 50, 0.12),
+        0 2px 8px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .emoji-big {
+      font-size: 64px;
+      line-height: 1;
+      margin-bottom: 20px;
+      display: block;
+      animation: bounce 2s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 800;
+      color: #c0392b;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    h2 {
+      font-size: clamp(1.25rem, 4vw, 1.6rem);
+      font-weight: 700;
+      color: #8b4513;
+      margin-bottom: 28px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #9b6347;
+      margin-bottom: 32px;
+      font-weight: 600;
+    }
+
+    .congrats-text {
+      font-size: 1.2rem;
+      color: #6d4c41;
+      line-height: 1.6;
+      margin-bottom: 28px;
+      font-weight: 600;
+    }
+
+    .congrats-img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 20px;
+      margin: 0 auto 28px;
+      display: block;
+      box-shadow: 0 6px 24px rgba(255,140,50,0.2);
+      object-fit: cover;
+    }
+
+    /* Placeholder image via CSS (pure CSS art) */
+    .img-placeholder {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ffd700, #ff8c00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      box-shadow: 0 8px 28px rgba(255,165,0,0.35);
+      animation: glow 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 8px 28px rgba(255,165,0,0.3); }
+      to   { box-shadow: 0 8px 42px rgba(255,100,0,0.55); }
+    }
+
+    .hint {
+      font-size: 1rem;
+      color: #b07040;
+      margin-bottom: 28px;
+      font-style: italic;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 38px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+      outline: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #ff8c00, #ff5722);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(255,87,34,0.4);
+    }
+
+    .btn-yes:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 24px rgba(255,87,34,0.5);
+    }
+
+    .btn-no {
+      background: #fff;
+      color: #c0392b;
+      border: 2.5px solid #ffb39e;
+      box-shadow: 0 2px 10px rgba(255,87,34,0.1);
+    }
+
+    .btn-no:hover {
+      background: #fff5f5;
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background: linear-gradient(135deg, #a8e063, #56ab2f);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(86,171,47,0.35);
+      padding: 14px 44px;
+    }
+
+    .btn-back:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 24px rgba(86,171,47,0.45);
+    }
+
+    /* Runaway button — placeholder space in card */
+    #runaway-placeholder {
+      height: 64px;
+      margin-bottom: 12px;
+    }
+
+    /* Runaway button floats over the whole viewport */
+    #btn-runaway {
+      position: fixed;
+      padding: 14px 34px;
+      border: 2.5px solid #ffb39e;
+      border-radius: 50px;
+      background: #fff;
+      color: #c0392b;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: left 0.18s ease, top 0.18s ease;
+      white-space: nowrap;
+      user-select: none;
+      box-shadow: 0 4px 18px rgba(255,87,34,0.18);
+      z-index: 1000;
+      display: none; /* shown only on page-cansolve */
+    }
+
+    .positive-note {
+      font-size: 1.05rem;
+      color: #7b5e3a;
+      margin-bottom: 24px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .card {
+        padding: 32px 24px 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: Main -->
+  <div id="page-main" class="page active">
+    <div class="card">
+      <span class="emoji-big">🎂</span>
+      <h1>С днём рождения, папа!</h1>
+      <p class="subtitle">Всё хорошо?</p>
+      <div class="buttons">
+        <button class="btn btn-yes" onclick="showPage('page-yes')">Да</button>
+        <button class="btn btn-no" onclick="showPage('page-worried')">Нет</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: All good -->
+  <div id="page-yes" class="page">
+    <div class="card">
+      <div class="img-placeholder">🌟</div>
+      <p class="congrats-text">Тогда хорошего дня!<br>Люблю тебя! ❤️</p>
+      <div class="buttons">
+        <button class="btn btn-back" onclick="showPage('page-main')">На главную</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: Something worrying? -->
+  <div id="page-worried" class="page">
+    <div class="card">
+      <span class="emoji-big">🤔</span>
+      <h2>Тебя что-то тревожит?</h2>
+      <div class="buttons">
+        <button class="btn btn-yes" onclick="showPage('page-cansolve')">Да</button>
+        <button class="btn btn-no" onclick="showPage('page-main')">Нет</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: Can you solve it? -->
+  <div id="page-cansolve" class="page">
+    <div class="card">
+      <span class="emoji-big">💪</span>
+      <h2>Ты можешь это решить?</h2>
+      <p class="positive-note">Тогда всё равно всё хорошо — я с тобой! 🧡</p>
+      <div id="runaway-placeholder"></div>
+      <div class="buttons">
+        <button class="btn btn-yes" onclick="showPage('page-main')">Да, решу!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Runaway button lives outside the card so it can roam the full viewport -->
+  <button id="btn-runaway">Не могу</button>
+
+  <script>
+    const runawayBtn = document.getElementById('btn-runaway');
+
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === 'page-cansolve') {
+        resetRunaway();
+        runawayBtn.style.display = 'block';
+      } else {
+        runawayBtn.style.display = 'none';
+      }
+    }
+
+    function resetRunaway() {
+      runawayBtn.style.transition = 'none';
+      // Place it centered horizontally, ~70% down the screen
+      const btnW = runawayBtn.offsetWidth  || 120;
+      const btnH = runawayBtn.offsetHeight || 52;
+      runawayBtn.style.left = ((window.innerWidth  - btnW) / 2) + 'px';
+      runawayBtn.style.top  = (window.innerHeight * 0.65) + 'px';
+      setTimeout(() => {
+        runawayBtn.style.transition = 'left 0.18s ease, top 0.18s ease';
+      }, 50);
+    }
+
+    function runAway() {
+      const btnW = runawayBtn.offsetWidth;
+      const btnH = runawayBtn.offsetHeight;
+      const margin = 12;
+
+      const maxLeft = window.innerWidth  - btnW - margin;
+      const maxTop  = window.innerHeight - btnH - margin;
+
+      const curLeft = parseFloat(runawayBtn.style.left) || window.innerWidth  / 2;
+      const curTop  = parseFloat(runawayBtn.style.top)  || window.innerHeight * 0.65;
+
+      // Try up to 8 times to land far enough from current position
+      let newLeft, newTop, attempts = 0;
+      do {
+        newLeft = margin + Math.random() * maxLeft;
+        newTop  = margin + Math.random() * maxTop;
+        attempts++;
+      } while (
+        attempts < 8 &&
+        Math.abs(newLeft - curLeft) < 80 &&
+        Math.abs(newTop  - curTop)  < 60
+      );
+
+      runawayBtn.style.left = newLeft + 'px';
+      runawayBtn.style.top  = newTop  + 'px';
+    }
+
+    // Desktop: flee on hover
+    runawayBtn.addEventListener('mouseenter', runAway);
+
+    // Mobile: flee on touch, block the click
+    runawayBtn.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      runAway();
+    }, { passive: false });
+  </script>
+</body>
+</html>
